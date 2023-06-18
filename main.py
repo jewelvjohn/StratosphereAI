@@ -1,8 +1,9 @@
 import sys
 from textToSpeech import TTS
+from speechToText import STT
 from PySide6.QtWidgets import (QApplication, QWidget, QLabel, 
                                QTextEdit, QHBoxLayout, QVBoxLayout, 
-                               QPushButton, QLineEdit)
+                               QPushButton)
 
 from PySide6.QtCore import Qt
 
@@ -39,6 +40,32 @@ class MainWindow(QWidget):
                                         color: #CCCCCC; 
                                         border-radius: 10px; 
                                         padding: 8px 8px;
+                                    }
+                                    """
+                                )
+        
+        listen_button = QPushButton("LISTEN")
+        listen_button.clicked.connect(self.run_stt)
+        listen_button.setStyleSheet(
+                                    """
+                                    QPushButton {
+                                        font-size: 15px;
+                                        font-weight: 800;
+                                        background-color: #335033;
+                                        border: 0px solid #555555;
+                                        border-radius: 5px;
+                                        color: #CCCCCC;
+                                        padding: 8px 8px;
+                                    }
+                                    
+                                    QPushButton:hover {
+                                        background-color: #151515;
+                                        border: 1px solid #555555;
+                                    }
+                                    
+                                    QPushButton:pressed {
+                                        background-color: #444444;
+                                        border: 2px solid #777777;
                                     }
                                     """
                                 )
@@ -101,6 +128,7 @@ class MainWindow(QWidget):
         main_layout = QVBoxLayout()
         main_layout.addWidget(input_label)
         main_layout.addWidget(self.input_textbox)
+        main_layout.addWidget(listen_button)
         main_layout.addWidget(output_label)
         main_layout.addWidget(self.output_textbox)
         main_layout.addWidget(run_button)
@@ -110,6 +138,13 @@ class MainWindow(QWidget):
     def run_ai(self):
         input = self.input_textbox.toPlainText()
         self.run_tts(input)
+
+    def run_stt(self):
+        self.input_textbox.setText("Say Something...")
+        stt = STT() 
+        text = stt.listen()
+        self.input_textbox.clear()
+        self.input_textbox.setText(text)
 
     def run_tts(self, input):
         tts = TTS(1, 150)
