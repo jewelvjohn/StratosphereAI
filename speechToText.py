@@ -9,5 +9,9 @@ class STT:
             audio = r.listen(source)
 
         text = r.recognize_google(audio)
+        print(text)
+
+        with open("files\\output.jwl", 'w') as f:
+            f.write(text)
 
         return text
