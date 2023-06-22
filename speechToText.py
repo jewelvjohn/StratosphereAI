@@ -11,7 +11,7 @@ class STT:
         text = r.recognize_google(audio)
         print(text)
 
-        with open("files\\output.jwl", 'w') as f:
-            f.write(text)
+        # with open("files\\output.jwl", 'w') as f:
+        #     f.write(text)
 
         return text

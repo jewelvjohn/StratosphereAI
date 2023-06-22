@@ -53,7 +53,7 @@ def get_response(intents_list,intenst_json):
 print("Chatbot started running!")
 
 while True:
-      message = input("")
+      message = input("Player: ")
       ints = predict_class(message)
       res = get_response(ints,intents)
-      print(res)
+      print("Sarah: ",res)

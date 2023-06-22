@@ -66,9 +66,9 @@ model.add(tf.keras.layers.Dense(64,activation='relu'))
 model.add(tf.keras.layers.Dropout(0,5))
 model.add(tf.keras.layers.Dense(len(train_y[0]),activation='softmax'))
 				
-sgd = tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True)#decay=1e-6,
+sgd = tf.keras.optimizers.SGD(learning_rate=0.005, momentum=0.9, nesterov=True)#decay=1e-6,
 model.compile(loss='categorical_crossentropy',optimizer=sgd,metrics=['accuracy'])
 				
-hist = model.fit(np.array(train_x),np.array(train_y),epochs=200,batch_size=5,verbose='auto')
+hist = model.fit(np.array(train_x),np.array(train_y),epochs=300,batch_size=5,verbose='auto')
 model.save('chatbot_model.h5',hist)
 print("Finished training!")
