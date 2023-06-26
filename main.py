@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (QApplication, QWidget,
 
 from speechToText import STT
 from textToSpeech import TTS
+from chatbot.chat import Chatbot
 from userInterface import MainWindow
 
 # app = QApplication(sys.argv)
@@ -20,38 +21,81 @@ from userInterface import MainWindow
 class WorkerThread(QThread):
     refresh_log_trigger = Signal()
     refresh_status_trigger = Signal()
+    disconnect_socket_trigger = Signal()
 
     def run(self):
-        tts = TTS()
-        stt = STT()
+        self.tts = TTS()
+        self.stt = STT()
 
-        host, port = "127.0.0.1", 25001
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((host, port))
-
-        notification = "Connection successfully established!"
-        self.update_status(notification)
-
+        self.connect_socket()
         while True:
             receivedData = self.sock.recv(1024).decode("UTF-8")
-            print(receivedData)
+            print("Received data: " + receivedData)
 
-            if(receivedData == "[Chatbot]"):
-                
-                recognition = stt.listen()
+            if receivedData == "[STT]":
+                self.with_stt()
 
-                if(recognition != ""):
-                    notification = "Speech recognised"
-                    self.update_status(notification)
+            elif "[SkipSTT]" in receivedData:
+                text = receivedData.replace("[SkipSTT]",'')
+                self.without_stt(text)
 
-                player_speech = "[Player]: " + recognition
-                self.update_log(player_speech)
+            elif receivedData == "[Disconnect]":
+                self.disconnect_socket()
+                break
+        
+        notification = "Closing socket thread!"
+        self.update_status(notification)
+        self.quit()
 
-                bot_speech = "[Chatbot]: " + recognition
-                self.update_log(bot_speech)
+    #Chatbot related stuff...
 
-                tts.speak(recognition, 1, 150)
-                self.sent(recognition)
+    def chatbot(self, input: str):
+        json_file = "chatbot\\intents.json"
+        data_file = "chatbot\\data.pth"
+        
+        chat = Chatbot(json_file, data_file)
+        response = chat.get_response(input)
+
+        return response
+
+    def with_stt(self):
+        recognition = self.stt.listen()
+
+        if(recognition != ""):
+            notification = "Speech recognised"
+            self.update_status(notification)
+
+        player_speech = "[Player]: " + recognition
+        self.update_log(player_speech)
+        self.sent(player_speech)
+        
+        response = self.chatbot(recognition)
+
+        bot_speech = "[Chatbot]: " + response + '\n'
+        self.update_log(bot_speech)
+        self.sent(bot_speech)
+
+        self.tts.speak(response, 1, 150)
+        self.sent("[Success]")
+
+
+    def without_stt(self, recognition: str):
+
+        player_speech = "[Player]: " + recognition
+        self.update_log(player_speech)
+        self.sent(player_speech)
+
+        response = self.chatbot(recognition)
+
+        bot_speech = "[Chatbot]: " + response + '\n'
+        self.update_log(bot_speech)
+        self.sent(bot_speech)
+
+        self.tts.speak(response, 1, 150)
+        self.sent("[Success]")
+
+
+    #UI related stuff...
 
     def update_log(self, text: str):
         file = open("files\\log.jwl", 'a')
@@ -67,18 +111,40 @@ class WorkerThread(QThread):
 
         self.refresh_status_trigger.emit()
 
+    #Socket related stuff...
+
     def sent(self, data: str):
         self.sock.sendall(data.encode("UTF-8"))
+
+    def connect_socket(self):
+        self.shutdownSocket = False
+
+        host, port = "127.0.0.1", 25001
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect((host, port))
+
+        notification = "Connection successfully established!"
+        self.update_status(notification)
+
+    def stop_socket(self):
+        self.sent("[Disconnect Request]")
+
+    def disconnect_socket(self):
+        self.sock.shutdown(socket.SHUT_RDWR)
+        self.sock.close()
+        
+        notification = "Connection successfully closed!"
+        self.update_status(notification)
 
 class MainWindow(QWidget):
     def __init__(self, app):
         super().__init__()
         self.app = app
 
+        self.clear_log_data()
+        self.clear_status_data()
+
         self.initialize_ui()
-        self.worker_thread = WorkerThread()
-        self.worker_thread.refresh_log_trigger.connect(self.refresh_log)
-        self.worker_thread.refresh_status_trigger.connect(self.refresh_status)
 
     def initialize_ui(self):
         self.resize(640, 640)
@@ -169,9 +235,38 @@ class MainWindow(QWidget):
                                     """
                                 )
         
+        disconnect_button = QPushButton("DISCONNECT")
+        disconnect_button.setFixedSize(130, 40)
+        disconnect_button.clicked.connect(self.disconnect)
+        disconnect_button.setStyleSheet(
+                                    """
+                                    QPushButton {
+                                        font-size: 15px;
+                                        font-weight: 800;
+                                        background-color: #335033;
+                                        border: 0px solid #555555;
+                                        border-radius: 5px;
+                                        color: #CCCCCC;
+                                        padding: 8px 8px;
+                                    }
+                                    
+                                    QPushButton:hover {
+                                        background-color: #151515;
+                                        border: 1px solid #555555;
+                                    }
+                                    
+                                    QPushButton:pressed {
+                                        background-color: #444444;
+                                        border: 2px solid #777777;
+                                    }
+                                    """
+                                )
+
         button_layout = QHBoxLayout()
         button_layout.setAlignment(Qt.AlignCenter)
         button_layout.addWidget(connect_button)
+        button_layout.addSpacing(20)
+        button_layout.addWidget(disconnect_button)
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(chat_header)
@@ -182,6 +277,20 @@ class MainWindow(QWidget):
         main_layout.addLayout(button_layout)
 
         self.setLayout(main_layout)
+
+    def initialize_worker(self):
+        self.worker_thread = WorkerThread()
+        self.worker_thread.refresh_log_trigger.connect(self.refresh_log)
+        self.worker_thread.refresh_status_trigger.connect(self.refresh_status)
+        self.worker_thread.disconnect_socket_trigger.connect(self.worker_thread.stop_socket)
+
+    def clear_status_data(self):
+        if os.path.isfile("files\\status.jwl"):
+            os.remove("files\\status.jwl")
+
+    def clear_log_data(self):
+        if os.path.isfile("files\\log.jwl"):
+            os.remove("files\\log.jwl")
 
     def status_data(self):
         if os.path.isfile("files\\status.jwl"):
@@ -209,16 +318,35 @@ class MainWindow(QWidget):
         text = self.log_data()
         self.chat_textbox.setPlainText(text)
 
-    def connect(self):
-        notification = "Trying to connect..."
+    def update_log(self, text: str):
+        file = open("files\\log.jwl", 'a')
+        file.write('\n '+ text)
+        file.close()
+
+        self.refresh_log()
+
+    def update_status(self, text: str):
         file = open("files\\status.jwl", 'a')
-        file.write(notification)
+        file.write('\n '+ text)
+        file.close()
+
         self.refresh_status()
+
+    def connect(self):
+        self.initialize_worker()
+
+        notification = "Trying to connect..."
+        self.update_status(notification)
 
         self.worker_thread.start()
 
-if __name__ == "__main__":
+    def disconnect(self):
+        notification = "Trying to disconnect..."
+        self.update_status(notification)
 
+        self.worker_thread.disconnect_socket_trigger.emit()
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow(app)
     window.show()
