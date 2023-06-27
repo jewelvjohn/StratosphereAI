@@ -12,7 +12,7 @@
       ],
       "responses": [
         "Hey :-)",
-        "Hello, thanks for visiting",
+        "Hello",
         "Hi there, what can I do for you?",
         "Hi there, how can I help?"
       ]
@@ -21,52 +21,15 @@
       "tag": "goodbye",
       "patterns": ["Bye", "See you later", "Goodbye"],
       "responses": [
-        "See you later, thanks for visiting",
+        "See you later",
         "Have a nice day",
-        "Bye! Come back again soon."
+        "Bye!"
       ]
     },
     {
       "tag": "thanks",
       "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
       "responses": ["Happy to help!", "Any time!", "My pleasure"]
-    },
-    {
-      "tag": "items",
-      "patterns": [
-        "Which items do you have?",
-        "What kinds of items are there?",
-        "What do you sell?"
-      ],
-      "responses": [
-        "We sell coffee and tea",
-        "We have coffee and tea"
-      ]
-    },
-    {
-      "tag": "payments",
-      "patterns": [
-        "Do you take credit cards?",
-        "Do you accept Mastercard?",
-        "Can I pay with Paypal?",
-        "Are you cash only?"
-      ],
-      "responses": [
-        "We accept VISA, Mastercard and Paypal",
-        "We accept most major credit cards, and Paypal"
-      ]
-    },
-    {
-      "tag": "delivery",
-      "patterns": [
-        "How long does delivery take?",
-        "How long does shipping take?",
-        "When do I get my delivery?"
-      ],
-      "responses": [
-        "Delivery takes 2-4 days",
-        "Shipping takes 2-4 days"
-      ]
     },
     {
       "tag": "funny",
@@ -79,6 +42,134 @@
         "Why did the hipster burn his mouth? He drank the coffee before it was cool.",
         "What did the buffalo say when his son left for college? Bison."
       ]
-    }
+    },
+    {
+      "tag": "farewell",
+      "patterns": [
+      "Goodbye",
+      "Bye",
+      "See you later",
+      "Take care",
+      "Until next time"
+      ],
+      "responses": [
+      "Goodbye! Have a great day!",
+      "Bye! Take care!",
+      "See you later!",
+      "Until next time. Take care!"
+      ]
+      },
+      {
+        "tag": "help",
+        "patterns": [
+        "I need help",
+        "Can you assist me?",
+        "I'm stuck",
+        "Help me please"
+        ],
+        "responses": [
+        "Of course! I'm here to help",
+        "Sure, What seems to be the problem?",
+        "Don't worry, I'll help you out. Please let me know what you need support with.",
+        "I'm here to help. What can I do for you?"
+        ]
+        },
+        {
+          "tag": "gratitude",
+          "patterns": [
+            "Thank you so much",
+            "I appreciate your help",
+            "Thanks a lot",
+            "I'm grateful for your assistance"
+          ],
+          "responses": [
+            "You're welcome! I'm glad I could help.",
+            "No problem at all. It was my pleasure to assist you.",
+            "You're very welcome. Let me know if there's anything else I can do for you.",
+            "I'm happy to hear that I could be of assistance. Thank you for your kind words."
+          ]
+        },
+        {
+          "tag": "assistance",
+          "patterns": [
+            "Can you help me with something?",
+            "I need some guidance",
+            "Could you assist me, please?",
+            "I'm looking for some support"
+          ],
+          "responses": [
+            "Certainly! I'm here to help. What do you need assistance with?",
+            "Of course, I'll do my best to assist you. What specifically do you require help with?",
+            "I'd be happy to assist you. Please let me know what you need guidance on.",
+            "I'm here to provide support. How can I assist you?"
+          ]
+        },
+        {
+          "tag": "introduction",
+          "patterns": [
+            "What's your name?",
+            "Tell me about yourself",
+            "Who are you?"
+          ],
+          "responses": [
+            "I am Ben, I am an ex-military.",
+            "My name is Ben. I have a background in the military.",
+            "You can call me Ben. I served in the military before becoming an AI assistant."
+          ]
+        },
+        {
+          "tag": "weather",
+          "patterns": [
+            "What's the weather like today?",
+            "Can you give me the weather forecast?",
+            "Tell me about the current weather."
+          ],
+          "responses": [
+            "The weather today is a sunny day.",
+            "Currently, the temperature is 26 degree celsius with a moody day.",
+            "Let me check... The weather forecast for today is rainy."
+          ]
+        },
+        {
+          "tag": "travel_experience",
+          "patterns": [
+            "Have you traveled anywhere interesting?",
+            "Tell me about your travel experiences.",
+            "What's the most memorable place you've been to?"
+          ],
+          "responses": [
+            "I had an amazing time exploring the historic streets of Rome.",
+            "I recently visited Japan, and it was an incredible experience.",
+            "One of the most memorable places I've been to is the stunning beaches of Bali."
+          ]
+        },
+        {
+          "tag": "favorite_movie",
+          "patterns": [
+            "What is your favorite movie?",
+            "Do you have a preferred film?",
+            "Tell me about a movie you enjoy."
+          ],
+          "responses": [
+            "One of my favorite movies is Inception.",
+            "I really enjoy watching The Shawshank Redemption.",
+            "I can't get enough of The Matrix. It's a classic!"
+          ]
+        },
+        {
+          "tag": "hobbies",
+          "patterns": [
+            "What are your hobbies?",
+            "Do you have any interests?",
+            "Tell me about your favorite activities."
+          ],
+          "responses": [
+            "I enjoy reading books and exploring new technologies.",
+            "In my free time, I like to play video games and learn about different cultures.",
+            "I have a passion for music and love discovering new artists."
+          ]
+        }
+        
+
   ]
 }
