@@ -52,13 +52,15 @@ class WorkerThread(QThread):
     def chatbot(self, input: str):
         json_file = "chatbot\\intents.json"
         data_file = "chatbot\\data.pth"
-        
+
         chat = Chatbot(json_file, data_file)
         response = chat.get_response(input)
 
         return response
 
     def with_stt(self):
+        notification = "Speech recognised"
+        self.update_status(notification)
         recognition = self.stt.listen()
 
         if(recognition != ""):

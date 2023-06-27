@@ -2,8 +2,8 @@ import json
 import torch
 import random
 
-from model import NeuralNet
-from nltk_utils import bag_of_words, tokenize
+from chatbot.model import NeuralNet
+from chatbot.nltk_utils import bag_of_words, tokenize
 
 class Chatbot():
     def __init__(self, json_file: str, data_file: str):
