@@ -84,6 +84,14 @@ h1 {
     margin: 0;
 }
 
+#scroll-lottie {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 64px;
+    height: 64px;
+}
+
 details {
     font-size: clamp(1rem, 2vw, 1.4rem);
     margin: 0;
@@ -143,6 +151,34 @@ summary {
 
     scale: 0.5;
     opacity: 0;
+}
+
+.page-content img {
+    width: clamp(128px, 50vw, 192px);
+    border-radius: 8px;
+    border: 2px solid #303030;
+}
+
+.socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.socials a {
+    height: clamp(36px, 10vw, 54px);
+    width: clamp(36px, 10vw, 54px);
+}
+
+.socials lottie-player {
+    height: 100%;
+    width: 100%;
+}
+
+.socials img {
+    height: 100%;
+    width: 100%;
 }
 
 @keyframes scroller {
