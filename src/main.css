@@ -105,6 +105,10 @@ summary {
     font-weight: 600;
 }
 
+ul {
+    margin: 0;
+}
+
 .highlight {
     background-color: #F05454;
     color: white;
