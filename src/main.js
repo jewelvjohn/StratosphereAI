@@ -2,8 +2,10 @@ import './main.css'
 import './gallery.css'
 import "@lottiefiles/lottie-player";
 import {create} from '@lottiefiles/lottie-interactivity';
+import * as rive from "@rive-app/canvas";
 
 var videoIsPlaying = false;
+let buttonPlay, buttonHover;
 
 const instagram = document.getElementById("instagram");
 instagram.onload = (e) => {
@@ -14,11 +16,26 @@ instagram.onload = (e) => {
     });
 }
 
+const playPause = new rive.Rive({
+    src: './rive/play-pause.riv',
+    canvas: document.getElementById('play-pause'),
+    autoplay: true,
+    stateMachines: 'StateMachine',
+    fit: rive.Fit.ScaleDown,
+    onLoad: () => {
+        playPause.resizeDrawingSurfaceToCanvas(4);
+        buttonPlay = playPause.stateMachineInputs('StateMachine').find(i => i.name === 'play');
+        buttonHover = playPause.stateMachineInputs('StateMachine').find(i => i.name === 'hover');
+    },
+});
+
 const videoContainer = document.getElementById("video-container");
 const videoPreview = document.getElementById("video-preview");
 const videoPlayer = document.getElementById("video-player");
 const videoButton = document.getElementById("video-button");
 
+videoButton.addEventListener('mouseenter', () => { if(buttonHover) buttonHover.value = true; });
+videoButton.addEventListener('mouseleave', () => { if(buttonHover) buttonHover.value = false; });
 videoButton.onclick = toggleVideo;
 videoPlayer.volume = 0.5;
 
@@ -28,12 +45,14 @@ function toggleVideo() {
         videoPlayer.style.display = "none";
         videoPlayer.pause();
         previewMode();
+        if(buttonPlay) buttonPlay.value = true;
         videoIsPlaying = false;
     } else {
         videoPreview.style.display = "none";
         videoPlayer.style.display = "flex";
         videoPlayer.play();
         videoMode();
+        if(buttonPlay) buttonPlay.value = false;
         videoIsPlaying = true;
     }
 }

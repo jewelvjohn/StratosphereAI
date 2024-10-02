@@ -180,9 +180,8 @@ ul {
     width: 100%;
 }
 
-.socials img {
-    height: 100%;
-    width: 100%;
+#profile-pic {
+    box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.2); 
 }
 
 @keyframes scroller {
